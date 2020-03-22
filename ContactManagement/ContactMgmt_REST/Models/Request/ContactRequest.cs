@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ContactMgmt_REST.Models.Request
 {
@@ -10,9 +6,11 @@ namespace ContactMgmt_REST.Models.Request
     {
         [Required]
         [MaxLength(20)]
+        [RegularExpression("^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$")]
         public string FirstName { get; set; }
 
         [MaxLength(20)]
+        [RegularExpression("^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$")]
         public string LastName { get; set; }
 
         [Required]
@@ -21,7 +19,7 @@ namespace ContactMgmt_REST.Models.Request
         public string Email { get; set; }
 
         [Required]
-        [MaxLength(10)]
+        [RegularExpression("^[0-9]{10}$")]
         public string PhoneNumber { get; set; }
 
         [Required]

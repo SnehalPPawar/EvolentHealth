@@ -57,11 +57,15 @@ namespace ContactMgmt_REST.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool result = _repo.EditContact(id, contact);
+            int result = _repo.EditContact(id, contact);
 
-            if (!result)
+            if (result == 0)
             {
                 return NotFound();
+            }
+            else if (result == -1)
+            {
+                return BadRequest("Duplicate data found.");
             }
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -79,6 +83,10 @@ namespace ContactMgmt_REST.Controllers
             if (contactId == 0)
             {
                 return BadRequest("Recored not created");
+            }
+            else if (contactId == -1)
+            {
+                return BadRequest("Duplicate data found.");
             }
 
             return CreatedAtRoute("DefaultApi", new { id = contactId }, contact);

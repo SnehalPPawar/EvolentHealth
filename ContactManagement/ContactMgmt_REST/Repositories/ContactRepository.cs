@@ -26,8 +26,11 @@ namespace ContactMgmt_REST.Repositories
         public int AddContact(ContactRequest contact)
         {
             Mapper.CreateMap<ContactRequest, Contact>();
-            Contact obj=Mapper.Map<ContactRequest, Contact>(contact);
-
+            Contact obj = Mapper.Map<ContactRequest, Contact>(contact);
+            if (IsDuplicateData(obj))
+            {
+                return -1;
+            }
             _db.Contacts.Add(obj);
             _db.SaveChanges();
 
@@ -40,12 +43,15 @@ namespace ContactMgmt_REST.Repositories
             _db.SaveChanges();
         }
 
-        public bool EditContact(int id, ContactRequest contact)
+        public int EditContact(int id, ContactRequest contact)
         {
             Mapper.CreateMap<ContactRequest, Contact>();
             Contact obj = Mapper.Map<ContactRequest, Contact>(contact);
             obj.ContactId = id;
-
+            if (IsDuplicateData(obj,id))
+            {
+                return -1;
+            }
             _db.Entry(obj).State = EntityState.Modified;
 
             try
@@ -54,21 +60,21 @@ namespace ContactMgmt_REST.Repositories
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ContactExists(id))
+                if (!IsExists(id))
                 {
-                    return false;// NotFound();
+                    return 0;// NotFound();
                 }
                 else
                 {
                     throw;
                 }
             }
-            return true;
+            return 1;
         }
 
         public Contact GetContact(int id)
         {
-            return _db.Contacts.FirstOrDefault(x=>x.ContactId==id);
+            return _db.Contacts.FirstOrDefault(x => x.ContactId == id);
         }
 
         public IEnumerable<Contact> GetContacts()
@@ -76,9 +82,19 @@ namespace ContactMgmt_REST.Repositories
             return _db.Contacts?.ToList();
         }
 
-        public bool ContactExists(int id)
+        public bool IsExists(int id)
         {
             return _db.Contacts.Count(e => e.ContactId == id) > 0;
+        }
+
+        public bool IsDuplicateData(Contact contact, int id = 0)
+        {
+            return _db.Contacts.Any(x =>
+                                    x.ContactId != id &&
+                                    string.Equals(x.FirstName + x.LastName, contact.FirstName + contact.LastName) ||
+                                    string.Equals(x.Email, contact.Email) ||
+                                    string.Equals(x.PhoneNumber, contact.PhoneNumber)
+                                   );
         }
         #endregion
     }

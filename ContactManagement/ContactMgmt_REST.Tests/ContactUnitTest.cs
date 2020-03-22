@@ -58,7 +58,7 @@ namespace ContactMgmt_REST.Tests
             _mockContactRepository.Setup(x => x.GetContact(It.IsAny<int>())).Returns(() => contacts[0]);
             _mockContactRepository.Setup(x => x.GetContacts()).Returns(() => contacts);
             _mockContactRepository.Setup(x => x.AddContact(It.IsAny<ContactRequest>())).Returns(() => 3);
-            _mockContactRepository.Setup(x => x.EditContact(It.IsAny<int>(), It.IsAny<ContactRequest>())).Returns(() => true);
+            _mockContactRepository.Setup(x => x.EditContact(It.IsAny<int>(), It.IsAny<ContactRequest>())).Returns(() => 1);
             _mockContactRepository.Setup(x => x.DeleteContact(It.IsAny<Contact>()));
 
         }
